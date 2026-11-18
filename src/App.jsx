@@ -1,20 +1,14 @@
 import { useState, useEffect } from "react";
 
-const INIT = [
-  { id: 1, text: "running", completed: false },
-  { id: 2, text: "sleep", completed: false },
-  { id: 3, text: "eat", completed: true },
-];
-
 export default function App() {
-  const [todos, setTodos] = useState(() => JSON.parse(localStorage.getItem("todos_v1") || "0") || INIT);
+  const [todos, setTodos] = useState(() => JSON.parse(localStorage.getItem("todos_v3") || "[]"));
   const [input, setInput] = useState(""), [filter, setFilter] = useState("all");
 
-  useEffect(() => localStorage.setItem("todos_v1", JSON.stringify(todos)), [todos]);
+  useEffect(() => localStorage.setItem("todos_v3", JSON.stringify(todos)), [todos]);
 
   const add = (t) => {
     const val = (t || input).trim();
-    if (val) { setTodos([...todos, { id: Date.now(), text: val, completed: false }]); setInput(""); }
+    if (val) { setTodos((prev) => [...prev, { id: Date.now() + Math.random(), text: val, completed: false }]); setInput(""); }
   };
   const toggle = (id) => setTodos(todos.map((t) => t.id === id ? { ...t, completed: !t.completed } : t));
   const del = (id) => setTodos(todos.filter((t) => t.id !== id));
@@ -59,7 +53,7 @@ export default function App() {
           {list.length === 0 ? (
             <div className="empty-message">
               <p>No {filter !== "all" ? filter : ""} tasks found.</p>
-              <button type="button" className="btn-reset-link" onClick={() => setTodos(INIT)}>Restore default tasks (running, sleep, eat)</button>
+              <p style={{ marginTop: 6, fontSize: 12, color: "#64748b" }}>Add a task above or click Quick Add (+ running, + sleep, + eat).</p>
             </div>
           ) : (
             list.map((t, i) => (
@@ -74,9 +68,11 @@ export default function App() {
           )}
         </div>
 
-        <footer className="todo-footer">
-          <button type="button" className="btn-reset" onClick={() => setTodos(INIT)}>↺ Reset Defaults (1. running, 2. sleep, 3. eat)</button>
-        </footer>
+        {todos.length > 0 && (
+          <footer className="todo-footer">
+            <button type="button" className="btn-reset" onClick={() => setTodos([])}>Clear All Tasks</button>
+          </footer>
+        )}
       </div>
     </div>
   );
