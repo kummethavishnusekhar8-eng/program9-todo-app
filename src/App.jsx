@@ -69,7 +69,6 @@ export default function App() {
         <header className="todo-header">
           <div className="title-row">
             <h1>Todo Application</h1>
-            <span className="badge-cs">Case Study 9</span>
           </div>
           <p className="subtitle">Daily Routine Checklist & Task Manager</p>
 
@@ -212,7 +211,6 @@ export default function App() {
           <button type="button" className="btn-reset" onClick={resetDefaults}>
             ↺ Reset Defaults (1. running, 2. sleep, 3. eat)
           </button>
-          <span className="footer-meta">Full-Stack Lab Case Study 9</span>
         </footer>
       </div>
     </div>
