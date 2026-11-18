@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 const INIT = [
   { id: 1, text: "running", completed: false },
@@ -8,8 +8,7 @@ const INIT = [
 
 export default function App() {
   const [todos, setTodos] = useState(() => JSON.parse(localStorage.getItem("todos_v1") || "0") || INIT);
-  const [input, setInput] = useState("");
-  const [filter, setFilter] = useState("all");
+  const [input, setInput] = useState(""), [filter, setFilter] = useState("all");
 
   useEffect(() => localStorage.setItem("todos_v1", JSON.stringify(todos)), [todos]);
 
@@ -19,8 +18,6 @@ export default function App() {
   };
   const toggle = (id) => setTodos(todos.map((t) => t.id === id ? { ...t, completed: !t.completed } : t));
   const del = (id) => setTodos(todos.filter((t) => t.id !== id));
-  const clearDone = () => setTodos(todos.filter((t) => !t.completed));
-
   const active = todos.filter((t) => !t.completed).length, done = todos.length - active;
   const pct = todos.length ? Math.round((done / todos.length) * 100) : 0;
   const list = todos.filter((t) => filter === "all" ? true : filter === "active" ? !t.completed : t.completed);
@@ -32,10 +29,7 @@ export default function App() {
           <div className="title-row"><h1>Todo Application</h1></div>
           <p className="subtitle">Daily Routine Checklist & Task Manager</p>
           <div className="progress-section">
-            <div className="progress-label-row">
-              <span>Progress: {done} of {todos.length} completed</span>
-              <span className="progress-pct">{pct}%</span>
-            </div>
+            <div className="progress-label-row"><span>Progress: {done} of {todos.length} completed</span><span className="progress-pct">{pct}%</span></div>
             <div className="progress-bar-bg"><div className="progress-bar-fill" style={{ width: `${pct}%` }} /></div>
           </div>
         </header>
@@ -47,9 +41,7 @@ export default function App() {
 
         <div className="presets-row">
           <span className="presets-label">Quick Add:</span>
-          {["running", "sleep", "eat"].map((p) => (
-            <button key={p} type="button" className="preset-btn" onClick={() => add(p)}>+ {p}</button>
-          ))}
+          {["running", "sleep", "eat"].map((p) => <button key={p} type="button" className="preset-btn" onClick={() => add(p)}>+ {p}</button>)}
         </div>
 
         <div className="filter-bar">
@@ -60,7 +52,7 @@ export default function App() {
               </button>
             ))}
           </div>
-          {done > 0 && <button type="button" className="btn-clear" onClick={clearDone}>Clear Completed</button>}
+          {done > 0 && <button type="button" className="btn-clear" onClick={() => setTodos(todos.filter((t) => !t.completed))}>Clear Completed</button>}
         </div>
 
         <div className="todo-list">
@@ -76,7 +68,7 @@ export default function App() {
                 <input type="checkbox" className="todo-checkbox" checked={t.completed} onChange={() => toggle(t.id)} id={`t-${t.id}`} />
                 <label htmlFor={`t-${t.id}`} className={`todo-text ${t.completed ? "struck" : ""}`}>{t.text}</label>
                 <span className={`status-badge ${t.completed ? "badge-completed" : "badge-active"}`}>{t.completed ? "Completed" : "Active"}</span>
-                <button type="button" className="btn-delete" onClick={() => del(t.id)} title="Delete">✕</button>
+                <button type="button" className="btn-delete" onClick={() => del(t.id)}>✕</button>
               </div>
             ))
           )}
