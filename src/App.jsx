@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from "react";
 
-const INITIAL = [
+const INIT = [
   { id: 1, text: "running", completed: false },
   { id: 2, text: "sleep", completed: false },
   { id: 3, text: "eat", completed: true },
 ];
 
 export default function App() {
-  const [todos, setTodos] = useState(() => JSON.parse(localStorage.getItem("simple_todos_v1") || "0") || INITIAL);
+  const [todos, setTodos] = useState(() => JSON.parse(localStorage.getItem("todos_v1") || "0") || INIT);
   const [input, setInput] = useState("");
   const [filter, setFilter] = useState("all");
 
-  useEffect(() => localStorage.setItem("simple_todos_v1", JSON.stringify(todos)), [todos]);
+  useEffect(() => localStorage.setItem("todos_v1", JSON.stringify(todos)), [todos]);
 
-  const add = (txt) => {
-    const val = (txt || input).trim();
+  const add = (t) => {
+    const val = (t || input).trim();
     if (val) { setTodos([...todos, { id: Date.now(), text: val, completed: false }]); setInput(""); }
   };
   const toggle = (id) => setTodos(todos.map((t) => t.id === id ? { ...t, completed: !t.completed } : t));
@@ -36,7 +36,7 @@ export default function App() {
               <span>Progress: {done} of {todos.length} completed</span>
               <span className="progress-pct">{pct}%</span>
             </div>
-            <div className="progress-bar-bg"><div className="progress-bar-fill" style={{ width: `${pct}%` }}></div></div>
+            <div className="progress-bar-bg"><div className="progress-bar-fill" style={{ width: `${pct}%` }} /></div>
           </div>
         </header>
 
@@ -67,23 +67,23 @@ export default function App() {
           {list.length === 0 ? (
             <div className="empty-message">
               <p>No {filter !== "all" ? filter : ""} tasks found.</p>
-              <button type="button" className="btn-reset-link" onClick={() => setTodos(INITIAL)}>Restore default tasks (running, sleep, eat)</button>
+              <button type="button" className="btn-reset-link" onClick={() => setTodos(INIT)}>Restore default tasks (running, sleep, eat)</button>
             </div>
           ) : (
-            list.map((todo, idx) => (
-              <div key={todo.id} className={`todo-card ${todo.completed ? "is-done" : "is-active"}`}>
-                <span className="todo-number">{idx + 1})</span>
-                <input type="checkbox" className="todo-checkbox" checked={todo.completed} onChange={() => toggle(todo.id)} id={`todo-${todo.id}`} />
-                <label htmlFor={`todo-${todo.id}`} className={`todo-text ${todo.completed ? "struck" : ""}`}>{todo.text}</label>
-                <span className={`status-badge ${todo.completed ? "badge-completed" : "badge-active"}`}>{todo.completed ? "Completed" : "Active"}</span>
-                <button type="button" className="btn-delete" onClick={() => del(todo.id)} title="Delete task">✕</button>
+            list.map((t, i) => (
+              <div key={t.id} className={`todo-card ${t.completed ? "is-done" : "is-active"}`}>
+                <span className="todo-number">{i + 1})</span>
+                <input type="checkbox" className="todo-checkbox" checked={t.completed} onChange={() => toggle(t.id)} id={`t-${t.id}`} />
+                <label htmlFor={`t-${t.id}`} className={`todo-text ${t.completed ? "struck" : ""}`}>{t.text}</label>
+                <span className={`status-badge ${t.completed ? "badge-completed" : "badge-active"}`}>{t.completed ? "Completed" : "Active"}</span>
+                <button type="button" className="btn-delete" onClick={() => del(t.id)} title="Delete">✕</button>
               </div>
             ))
           )}
         </div>
 
         <footer className="todo-footer">
-          <button type="button" className="btn-reset" onClick={() => setTodos(INITIAL)}>↺ Reset Defaults (1. running, 2. sleep, 3. eat)</button>
+          <button type="button" className="btn-reset" onClick={() => setTodos(INIT)}>↺ Reset Defaults (1. running, 2. sleep, 3. eat)</button>
         </footer>
       </div>
     </div>
